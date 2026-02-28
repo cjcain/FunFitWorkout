@@ -19,10 +19,10 @@ and works for me.
 
 # REQUIREMENTS:
 
-  - Python 3     - free to download from https://www.python.org/downloads/
-  - workouts.py  - the application
-  - workouts.csv - the list of workouts to choose from
-  - FunFitLand app - https://www.funfitland.com/
+  - **Python 3**     - free to download from [python.org](https://www.python.org/downloads/)
+  - **workouts.py**  - the application
+  - **workouts.csv** - the list of workouts to choose from
+  - **FunFitLand app** - [FunFitLand](https://www.funfitland.com/)
 
   I have tested this on Windows & Linux, but should work on any system
   that supports Python 3.
@@ -30,7 +30,7 @@ and works for me.
 
 # RUNNING THE APP:
 
-Start the app with: python3 workouts.py
+Start the app with: **python3 workouts.py**
 
 A window will appear so the user can select the workout type, level, and
 time the workout set should use.
@@ -88,17 +88,19 @@ prefer a variety!)
 
 
 # FILE DESCRIPTIONS:
-  workouts.py - The Python 3 application script
-  workouts.csv - List of workouts that the user would like to use (favorites)
+
+  **workouts.py** - The Python 3 application script
+  **workouts.csv** - List of workouts that the user would like to use (favorites)
                  The initial file will contain all FunFitLand workouts as of
                  when the file was uploaded.
                  The user can edit this text file and remove the line containing
                  any workouts they do not want to use.
-  FunFitLandWorkouts_all.csv - List of all FunFitLand workouts as of 28-Feb-2026
+  **FunFitLandWorkouts_all.csv** - List of all FunFitLand workouts as of 28-Feb-2026
                  File is initially the same as workouts.csv but included so the user
                  can modify workouts.csv, but still go back to original if desired.
 
-  The following files will get created after accepting a workout set.
-    workouts_dates.json - List of workouts and date they were last used
-    workouts_lasttype.txt - internal file to keep track of last workout
-    workouts_log.csv - List of workouts and when they were accepted (history)
+  The following files will get created after accepting a workout set:
+    **workouts_dates.json** - List of workouts and date they were last used
+    **workouts_lasttype.txt** - internal file to keep track of last workout
+    **workouts_log.csv** - List of workouts and when they were accepted (history)
+

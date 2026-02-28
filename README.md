@@ -89,18 +89,21 @@ prefer a variety!)
 
 # FILE DESCRIPTIONS:
 
-  **workouts.py** - The Python 3 application script
-  **workouts.csv** - List of workouts that the user would like to use (favorites)
+- **workouts.py** - The Python 3 application script
+- **workouts.csv** - List of workouts that the user would like to use (favorites)
                  The initial file will contain all FunFitLand workouts as of
                  when the file was uploaded.
                  The user can edit this text file and remove the line containing
                  any workouts they do not want to use.
-  **FunFitLandWorkouts_all.csv** - List of all FunFitLand workouts as of 28-Feb-2026
+- **FunFitLandWorkouts_all.csv** - List of all FunFitLand workouts as of 28-Feb-2026
                  File is initially the same as workouts.csv but included so the user
                  can modify workouts.csv, but still go back to original if desired.
 
-  The following files will get created after accepting a workout set:
-    **workouts_dates.json** - List of workouts and date they were last used
-    **workouts_lasttype.txt** - internal file to keep track of last workout
-    **workouts_log.csv** - List of workouts and when they were accepted (history)
+The following files will get created after accepting a workout set:
+- **workouts_dates.json** - List of workouts and date they were last used
+- **workouts_lasttype.txt** - internal file to keep track of last workout
+- **workouts_log.csv** - List of workouts and when they were accepted (history)
 
+
+# QUESTIONS / SUGGESTIONS:
+<cainine@gmail.com>

@@ -16,6 +16,7 @@ Since this is a separate app, it is a bit of manual process to actually
 search for each of the randomly selected workouts, but it is not difficult
 and works for me.
 
+![Screenshot](workout_screenshot.jpg)
 
 # REQUIREMENTS:
 

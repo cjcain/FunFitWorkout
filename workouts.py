@@ -6,6 +6,7 @@ import os
 import json
 import tkinter as tk
 from tkinter import messagebox, scrolledtext, simpledialog
+import re
 
 # -------------------- Config --------------------
 CSV_FILE = "workouts.csv"
@@ -75,6 +76,17 @@ def load_workouts():
                 "music": music,
                 "last_date": last_dates.get(name)
             })
+
+    # Check for workouts with dates that are not in the workout list (spelling)
+    found=False
+    for key in last_dates:
+        if not [w for w in workouts if w["name"] == key]:
+            if not found:
+                print("\nWARNING: last date found for workout that is not in "+CSV_FILE)
+            print("    "+key)
+            found=True
+    if found:
+        print("")
 
     return workouts
 

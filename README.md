@@ -16,7 +16,7 @@ Since this is a separate app, it is a bit of manual process to actually
 search for each of the randomly selected workouts, but it is not difficult
 and works for me.
 
-![Screenshot](workout_screenshot.jpg)
+![Workout App Screenshot](workout_screenshot.jpg)
 
 # REQUIREMENTS:
 
@@ -104,6 +104,14 @@ The following files will get created after accepting a workout set:
 - **workouts_dates.json** - List of workouts and date they were last used
 - **workouts_lasttype.txt** - internal file to keep track of last workout
 - **workouts_log.csv** - List of workouts and when they were accepted (history)
+
+
+# HISTORY:
+
+I originally started keeping track of the workouts in a Google sheets document, so I could track of my favorites as well as which ones I have done. I do keep it updated every couple weeks if you want a paper sheet or want to do your own sorting.
+Link: https://docs.google.com/spreadsheets/d/1BruRybjQ4Xc1HNxbvjK5upPRMhCs3B490SJoFx9VcI8/edit?usp=sharing
+
+![Google Sheet Screenshot](FunFitLandSpreadsheet.png)
 
 
 # QUESTIONS / SUGGESTIONS:

@@ -16,7 +16,7 @@ Since this is a separate app, it is a bit of manual process to actually
 search for each of the randomly selected workouts, but it is not difficult
 and works for me.
 
-![Workout App Screenshot](workout_screenshot.jpg)
+![Workout App Screenshot](workout_screenshot.png)
 
 # REQUIREMENTS:
 
@@ -36,9 +36,9 @@ Start the app with: **python3 workouts.py**
 A window will appear so the user can select the workout type, level, and
 time the workout set should use.
 
-1. Workout type: groove, combat or flow
+1. Workout type: groove, combat, flow, or a combination
 
-    All workouts will use the selected type
+    All workouts will use the selected type(s)
 
 2. Minimum and Maximum level: Light / Medium / Intense
 
@@ -55,21 +55,27 @@ time the workout set should use.
     a perfect set of workouts for a target duration some of the sets will be
     a few minutes longer than the target duration.
 
+4. Use new workouts?
 
-After selecting the desired options, the user should click the "Generate Workout"
+    Checking this option will prioritize the last workouts in the workouts.csv file.
+    I always add the new workouts to the end of that file, so when this box is
+    checked, it will ensure those workouts get selected.
+
+After selecting the desired options, the user should click the "Generate New Workout"
 button. That will calculate a set of workouts meeting the chriteria.
 
 Example output:
 
-    Selected Workouts: (groove)
-      - Echos of Home (13 min, Light, Folk)
-      - Chill Time (13 min, Medium, HipHop)
-      - Future Space (17 min, Intense, Pop)
+    Selected Workouts: (combat / groove)
+      - Carefree Fiesta 1 (12 min, Light, World, groove)
+      - 5 MIN Fast Burning  1 (8 min, Medium, Rock, combat)
+      - In the Dark House 1 (14 min, Medium, EDM, combat)
+      - Rythmic Fusion (12 min, Intense, Pop, groove)
 
-      Duration: 43 min (13 min @ Light / 13 min @ Medium / 17 min @ Intense)
+      Duration: 46 min (12 min @ Light / 22 min @ Medium / 12 min @ Intense)
       Average difficulty: 2.00 (Medium)
 
-The user can get different workout sets by pressing the "Generate Workout" button.
+The user can get different workout sets by pressing the "Generate New Workout" button.
 Once the user sees a set they like, they can press the "Approve" button.
 
 The app will then update the "last used date" for the selected workouts to today.
@@ -81,7 +87,7 @@ prefer a variety!)
 
 1. From the main menu click on the WORKOUTS button on the bottom.
 2. On the upper left, click the desired workout type (Goove, Combat, Flow)
-3. On the top middle line (with magnifying glass) and then type in part of
+3. On the top middle line (with magnifying glass) and then type part of
    the first workout name. It will then show list of matching workouts.
 4. Click on workout tile and press the Start button in bottom middle.
 5. Do the workout

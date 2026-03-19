@@ -21,6 +21,7 @@ levels = { level_name[1]: 1, level_name[2]: 2, level_name[3]: 3 }
 DEFAULT_TIME = 42
 DEFAULT_TIME_BUFFER = 5
 DEBUG = 0
+NEWEST_WORKOUT_COUNT = 10
 
 # -------------------- Date Storage --------------------
 def load_last_dates():
@@ -128,7 +129,7 @@ def get_default_type():
     return default
 
 # -------------------- Workout Selection --------------------
-def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_difficulty):
+def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_difficulty, use_new):
     today = datetime.today()
 
     for w in workouts:
@@ -136,9 +137,20 @@ def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_diffic
             (today - w["last_date"]).days if w["last_date"] else 9999
         )
 
+    new = workouts[-NEWEST_WORKOUT_COUNT:]
+    if DEBUG > 0:
+        for n in new:
+            print("NEW: "+n["name"]+" ("+n["type"]+","+level_name[n["difficulty"]]+")")
+
     # Get workouts of specific type and sort
-    available = [w for w in workouts if w["type"] == w_type]
+    available = [w for w in workouts if w["type"] in w_type]
     available.sort(key=lambda w: w["days_since"], reverse=True)
+
+    do_shuffle = True
+    if use_new:
+        #available = [n for n in new if n["type"] == w_type] + available
+        ##available += [n for n in new if n["type"] == w_type]
+        do_shuffle = False
 
     selected = []
     total_time = 0
@@ -153,10 +165,21 @@ def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_diffic
         if DEBUG > 0:
             print("difficulty="+str(difficulty)+", "+str(len(candidates))+" candidates, "+str(len(w))+" workouts")
         if candidates:
-            top_n = min(5, len(candidates))
-            top_candidates = candidates[:top_n]
-            random.shuffle(top_candidates)
-            chosen = top_candidates[0]
+            match = False
+            if use_new:
+                random.shuffle(new)
+                for n in new:
+                    if n["difficulty"] == difficulty and n["type"] in w_type and n not in selected:
+                        match = True
+                        chosen = n
+                        #print("Selected new: "+n["name"])
+                        new.remove(n)
+                        break
+            if not match:
+                top_n = min(10, len(candidates))
+                top_candidates = candidates[:top_n]
+                random.shuffle(top_candidates)
+                chosen = top_candidates[0]
             if DEBUG > 0:
                 print("...adding(a) "+chosen["name"]+" - "+str(chosen["duration"])+" min "+level_name[chosen["difficulty"]])
             selected.append(chosen)
@@ -221,7 +244,7 @@ def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_diffic
     summary = {1: 0, 2: 0, 3: 0}
 
     if len(selected) > 0:
-        selected.sort(key=lambda w: (w["difficulty"], w["days_since"]))
+        selected.sort(key=lambda w: (w["difficulty"], w["duration"], w["days_since"]))
 
         avg_diff = sum(w["difficulty"] for w in selected) / len(selected)
 
@@ -233,7 +256,10 @@ def select_workouts(workouts, w_type, target_minutes, min_difficulty, max_diffic
             session_level = level_name[3]
 
         for w in selected:
-            summary[w["difficulty"]] += w["duration"]
+            if w["difficulty"] not in summary:
+                print("ERROR: "+w["name"]+" difficulty is not valid: "+str(w["difficulty"]))
+            else:
+                summary[w["difficulty"]] += w["duration"]
     else:
         print("NO WORKOUTS FOUND")
         session_level = level_name[1]
@@ -252,16 +278,16 @@ class WorkoutApp:
         self.default_type = get_default_type()
         self.level_min_var = level_name[1]
         self.level_max_var = level_name[3]
+        self.use_new_workouts = tk.BooleanVar()
 
         tk.Label(root, text="Workout type:", anchor="e").grid(row=0, column=0, sticky="e")
         self.type_var = tk.StringVar(value=self.default_type)
-        tk.OptionMenu(root, self.type_var, "combat", "groove", "flow")\
+        tk.OptionMenu(root, self.type_var, "combat", "groove", "combat / groove", "flow", "groove / flow", "combat / flow", "combat / groove / flow")\
             .grid(row=0, column=1, sticky="w")
 
         self.options = { level_name[1]: 1, level_name[2]: 2, level_name[3]: 3 }
         tk.Label(root, text="Min level:", anchor="e").grid(row=1, column=0, sticky="e")
         self.min_var = tk.StringVar(value=self.level_min_var)
-        #tk.OptionMenu(root, self.min_var, *self.options.keys())\
         tk.OptionMenu(root, self.min_var, level_name[1], level_name[2], level_name[3])\
             .grid(row=1, column=1, sticky="w")
         tk.Label(root, text="Max level:", anchor="e").grid(row=1, column=2, sticky="e")
@@ -275,21 +301,24 @@ class WorkoutApp:
         tk.Entry(root, textvariable=self.duration_var)\
             .grid(row=2, column=1, sticky="w")
 
-        tk.Button(root, text="Generate Workout",
+        tk.Checkbutton(root, text="Use new workouts?", variable=self.use_new_workouts)\
+                .grid(row=4, column=0, columnspan=2, pady=5)
+
+        tk.Button(root, text="Generate New Workout",
                   command=self.generate)\
-            .grid(row=4, column=0, columnspan=2, pady=5)
+            .grid(row=5, column=0, columnspan=2, pady=5)
 
         #tk.Button(root, text="Generate Weekly Plan",
         #          command=self.weekly_plan)\
         #    .grid(row=6, column=0, columnspan=2, pady=5)
 
         self.text_area = scrolledtext.ScrolledText(
-            root, width=70, height=20
+            root, width=80, height=20
         )
         self.text_area.grid(row=3, column=0, columnspan=5, pady=5)
 
         tk.Button(root, text="Approve", bg='blue', fg='white', command=self.approve)\
-            .grid(row=4, column=2, pady=5)
+            .grid(row=5, column=2, pady=5)
 
 
     # -------------------- Single Day --------------------
@@ -315,7 +344,7 @@ class WorkoutApp:
         w_type = self.type_var.get()
 
         self.selected, total_time, session_level, avg_diff, summary = \
-            select_workouts(self.workouts, w_type, target, level_min, level_max)
+            select_workouts(self.workouts, w_type, target, level_min, level_max, self.use_new_workouts.get())
 
         self.display_results(
             self.selected, total_time, avg_diff,
@@ -340,7 +369,13 @@ class WorkoutApp:
                 w_music = ", "+w['music']
             else:
                 w_music = ""
-            self.text_area.insert(tk.END,f"  - {w['name']} ({w['duration']} min, {levelName[w['difficulty']]}{w_music})",color)
+
+            if "/" in w_type:
+                # Add the type (since user has multiple types selected)
+                self.text_area.insert(tk.END,f"  - {w['name']} ({w['duration']} min, {levelName[w['difficulty']]}{w_music}, {w['type']})",color)
+            else:
+                self.text_area.insert(tk.END,f"  - {w['name']} ({w['duration']} min, {levelName[w['difficulty']]}{w_music})",color)
+
             if w["last_date"]:
                 self.text_area.insert(tk.END,f"  -  last: "+w["last_date"].strftime("%Y-%m-%d"))
             self.text_area.insert(tk.END,"\n")
@@ -371,10 +406,12 @@ class WorkoutApp:
 
         today = datetime.today()
 
-        print("\nWORKOUTS for "+str(today)+":")
-        for w in self.workouts:
-            if w in self.selected:
-                w["last_date"] = today
+        print("\nWORKOUTS ("+self.type_var.get()+") for "+str(today)+":")
+        for w in self.selected:
+            w["last_date"] = today
+            if "/" in self.type_var.get():
+                print(" - "+w["name"]+" - "+str(w["duration"])+" min ("+level_name[w["difficulty"]]+", "+w["type"]+")")
+            else:
                 print(" - "+w["name"]+" - "+str(w["duration"])+" min ("+level_name[w["difficulty"]]+")")
 
         total_time = sum(w["duration"] for w in self.selected)
@@ -422,7 +459,7 @@ class WorkoutApp:
 
         for day in range(1, days + 1):
             selected, total_time, session_level, avg_diff, summary = \
-                select_workouts(self.workouts, current_type, target)
+                select_workouts(self.workouts, current_type, target, self.use_new_workouts.get())
 
             weekly_selected.extend(selected)
 
